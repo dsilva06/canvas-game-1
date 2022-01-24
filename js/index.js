@@ -41,12 +41,14 @@ class Projectile extends Player {
 }
 
 const shooter = new Player(this.x, this.y, 30, "black");
-shooter.draw();
+
 
 const projectiles = [];
 
 function animate() {
   requestAnimationFrame(animate);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  shooter.draw();
   projectiles.forEach((projectile) => {
     projectile.update();
   });
@@ -58,9 +60,10 @@ addEventListener("click", (event) => {
     event.clientX - canvas.width / 2
   );
   const velocity = {
-    x : Math.cos(angle)
+    x : Math.cos(angle),
+    y : Math.sin(angle)
   }
 
-  projectiles.push(new Projectile(this.x, this.y, 10, "blue", { x: 1, y: 1 }));
+  projectiles.push(new Projectile(this.x, this.y, 10, "blue", velocity));
 });
 animate();
