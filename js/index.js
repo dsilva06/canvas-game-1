@@ -34,7 +34,28 @@ class Projectile extends Player {
   }
 }
 class Enemy extends Projectile {}
-class Particle extends Projectile {}
+class Particle extends Projectile {
+  constructor(x, y, radius, color, velocity) {
+    super(x, y, radius, color, velocity);
+    this.alpha = 1;
+  }
+
+  draw() {
+    ctx.save();
+    ctx.globalAlpha = this.alpha;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+    ctx.fillStyle = this.color;
+    ctx.fill();
+    ctx.restore();
+  }
+  update() {
+    this.draw();
+    this.x = this.x + this.velocity.x;
+    this.y = this.y + this.velocity.y;
+    this.alpha -= 0.01;
+  }
+}
 
 const shooter = new Player(this.x, this.y, 15, "orangered");
 
@@ -60,8 +81,8 @@ function spawnEnemies() {
     const angle = Math.atan2(canvas.height / 2 - y, canvas.width / 2 - x);
 
     const velocity = {
-      x: Math.cos(angle) * 3,
-      y: Math.sin(angle) * 3,
+      x: Math.cos(angle) * 2,
+      y: Math.sin(angle) * 2,
     };
 
     enemies.push(new Enemy(x, y, radius, color, velocity));
@@ -73,9 +94,16 @@ function animate() {
   ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   shooter.draw();
-  particles.forEach((particle) => {
+
+  particles.forEach((particle, index) => {
+    if (particle.alpha <= 0) {
+      particles.splice(index, 1);
+    } else {
+      particle.update();
+    }
     particle.update();
   });
+
   projectiles.forEach((projectile, index) => {
     projectile.update();
 
@@ -108,12 +136,19 @@ function animate() {
 
       // WHEN PROJECTILES TOUCH ENEMIES
       if (dist - enemy.radius - projectile.radius < 1) {
-        for (let i = 0; i < 8; i++) {
+        // CREATE EXPLOSIONS
+        for (let i = 0; i < enemy.radius; i++) {
           particles.push(
-            new Particle(projectile.x, projectile.y, 3, enemy.color, {
-              x: Math.random() - 0.5,
-              y: Math.random() - 0.5,
-            })
+            new Particle(
+              projectile.x,
+              projectile.y,
+              Math.random() * 2,
+              enemy.color,
+              {
+                x: (Math.random() - 0.5) * (Math.random() * 5),
+                y: (Math.random() - 0.5) * (Math.random() * 5),
+              }
+            )
           );
         }
         if (enemy.radius - 8 > 10) {
