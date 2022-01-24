@@ -34,11 +34,13 @@ class Projectile extends Player {
   }
 }
 class Enemy extends Projectile {}
+class Particle extends Projectile {}
 
 const shooter = new Player(this.x, this.y, 15, "orangered");
 
 const projectiles = [];
 const enemies = [];
+const particles = [];
 
 function spawnEnemies() {
   setInterval(() => {
@@ -71,6 +73,9 @@ function animate() {
   ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   shooter.draw();
+  particles.forEach((particle) => {
+    particle.update();
+  });
   projectiles.forEach((projectile, index) => {
     projectile.update();
 
@@ -86,7 +91,6 @@ function animate() {
       }, 0);
     }
   });
-
 
   enemies.forEach((enemy, index) => {
     enemy.update();
@@ -104,16 +108,24 @@ function animate() {
 
       // WHEN PROJECTILES TOUCH ENEMIES
       if (dist - enemy.radius - projectile.radius < 1) {
+        for (let i = 0; i < 8; i++) {
+          particles.push(
+            new Particle(projectile.x, projectile.y, 3, enemy.color, {
+              x: Math.random() - 0.5,
+              y: Math.random() - 0.5,
+            })
+          );
+        }
         if (enemy.radius - 8 > 10) {
           gsap.to(enemy, {
-            radius: enemy.radius - 8
-          })
+            radius: enemy.radius - 8,
+          });
           setTimeout(() => {
             projectiles.splice(projectileIndex, 1);
           }, 0);
         } else {
           setTimeout(() => {
-            enemies.splice(index, 1)
+            enemies.splice(index, 1);
             projectiles.splice(projectileIndex, 1);
           }, 0);
         }
