@@ -4,6 +4,9 @@ const ctx = canvas.getContext("2d");
 canvas.width = innerWidth;
 canvas.height = innerHeight;
 
+const score = document.getElementById("score");
+
+
 x = canvas.width / 2;
 y = canvas.height / 2;
 class Player {
@@ -93,6 +96,7 @@ function spawnEnemies() {
   }, 1000);
 }
 let engine;
+let points = 0;
 function animate() {
   engine = requestAnimationFrame(animate);
   ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
@@ -139,7 +143,12 @@ function animate() {
       const dist = Math.hypot(projectile.x - enemy.x, projectile.y - enemy.y);
 
       // WHEN PROJECTILES TOUCH ENEMIES
-      if (dist - enemy.radius - projectile.radius < 1) {
+      if (dist - enemy.radius - projectile.radius < 1) 
+      {
+        // INCREASE SCORE
+        points += 100
+        score.innerHTML = points
+
         // CREATE EXPLOSIONS
         for (let i = 0; i < enemy.radius; i++) {
           particles.push(
