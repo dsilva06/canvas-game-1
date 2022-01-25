@@ -67,9 +67,9 @@ class Particle extends Projectile {
 }
 
 let shooter = new Player(this.x, this.y, 15, "orangered");
-
 let projectiles = [];
 let enemies = [];
+let enemyInterval;
 let particles = [];
 
 function init() {
@@ -77,14 +77,14 @@ function init() {
   projectiles = [];
   enemies = [];
   particles = [];
-  points = 0
-  score.innerHTML = points
-  finalResult.innerHTML = points
-
+  points = 0;
+  score.innerHTML = points;
+  finalResult.innerHTML = points;
+  spawnEnemies();
 }
 
 function spawnEnemies() {
-  setInterval(() => {
+  enemyInterval = setInterval(() => {
     const radius = Math.random() * (35 - 8) + 8;
     let x;
     let y;
@@ -106,6 +106,7 @@ function spawnEnemies() {
     };
 
     enemies.push(new Enemy(x, y, radius, color, velocity));
+    console.log(enemies);
   }, 1000);
 }
 let engine;
@@ -145,13 +146,6 @@ function animate() {
     enemy.update();
 
     const dist = Math.hypot(shooter.x - enemy.x, shooter.y - enemy.y);
-
-    // END GAME
-    if (dist - enemy.radius - shooter.radius < 1) {
-      cancelAnimationFrame(engine);
-      modalEl.style.display = "flex";
-      finalResult.innerHTML = points;
-    }
 
     // PROJECTILE ELIMINATION
     projectiles.forEach((projectile, projectileIndex) => {
@@ -203,6 +197,13 @@ function animate() {
         }
       }
     });
+    // END GAME
+    if (dist - enemy.radius - shooter.radius < 1) {
+      clearInterval(enemyInterval);
+      cancelAnimationFrame(engine);
+      modalEl.style.display = "flex";
+      finalResult.innerHTML = points;
+    }
   });
 }
 
@@ -221,6 +222,6 @@ addEventListener("click", (event) => {
 startGame.addEventListener("click", () => {
   init();
   animate();
-  spawnEnemies();
+
   modalEl.style.display = "none";
 });
