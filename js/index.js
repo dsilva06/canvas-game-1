@@ -5,6 +5,9 @@ canvas.width = innerWidth;
 canvas.height = innerHeight;
 
 const score = document.getElementById("score");
+const startGame = document.getElementById("startGame");
+const modalEl = document.getElementById("modalEl");
+const finalResult = document.getElementById("finalResult");
 
 x = canvas.width / 2;
 y = canvas.height / 2;
@@ -63,11 +66,22 @@ class Particle extends Projectile {
   }
 }
 
-const shooter = new Player(this.x, this.y, 15, "orangered");
+let shooter = new Player(this.x, this.y, 15, "orangered");
 
-const projectiles = [];
-const enemies = [];
-const particles = [];
+let projectiles = [];
+let enemies = [];
+let particles = [];
+
+function init() {
+  shooter = new Player(this.x, this.y, 15, "orangered");
+  projectiles = [];
+  enemies = [];
+  particles = [];
+  points = 0
+  score.innerHTML = points
+  finalResult.innerHTML = points
+
+}
 
 function spawnEnemies() {
   setInterval(() => {
@@ -135,6 +149,8 @@ function animate() {
     // END GAME
     if (dist - enemy.radius - shooter.radius < 1) {
       cancelAnimationFrame(engine);
+      modalEl.style.display = "flex";
+      finalResult.innerHTML = points;
     }
 
     // PROJECTILE ELIMINATION
@@ -202,5 +218,9 @@ addEventListener("click", (event) => {
 
   projectiles.push(new Projectile(this.x, this.y, 5, "orangered", velocity));
 });
-animate();
-spawnEnemies();
+startGame.addEventListener("click", () => {
+  init();
+  animate();
+  spawnEnemies();
+  modalEl.style.display = "none";
+});
