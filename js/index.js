@@ -34,6 +34,8 @@ class Projectile extends Player {
   }
 }
 class Enemy extends Projectile {}
+
+const friction = 0.99;
 class Particle extends Projectile {
   constructor(x, y, radius, color, velocity) {
     super(x, y, radius, color, velocity);
@@ -51,6 +53,8 @@ class Particle extends Projectile {
   }
   update() {
     this.draw();
+    this.velocity.x *= friction;
+    this.velocity.y *= friction;
     this.x = this.x + this.velocity.x;
     this.y = this.y + this.velocity.y;
     this.alpha -= 0.01;
