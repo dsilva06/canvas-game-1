@@ -6,7 +6,6 @@ canvas.height = innerHeight;
 
 const score = document.getElementById("score");
 
-
 x = canvas.width / 2;
 y = canvas.height / 2;
 class Player {
@@ -143,12 +142,7 @@ function animate() {
       const dist = Math.hypot(projectile.x - enemy.x, projectile.y - enemy.y);
 
       // WHEN PROJECTILES TOUCH ENEMIES
-      if (dist - enemy.radius - projectile.radius < 1) 
-      {
-        // INCREASE SCORE
-        points += 100
-        score.innerHTML = points
-
+      if (dist - enemy.radius - projectile.radius < 1) {
         // CREATE EXPLOSIONS
         for (let i = 0; i < enemy.radius; i++) {
           particles.push(
@@ -165,17 +159,31 @@ function animate() {
           );
         }
         if (enemy.radius - 8 > 10) {
+          // INCREASE SCORE
+          points += 50;
+          score.innerHTML = points;
+          // END INCREASE SCORE
+
+          // SHRINK
           gsap.to(enemy, {
             radius: enemy.radius - 8,
           });
           setTimeout(() => {
             projectiles.splice(projectileIndex, 1);
           }, 0);
+          // END SHRINK
         } else {
+          // INCREASE SCORE
+          points += 100;
+          score.innerHTML = points;
+          // END INCREASE SCORE
+
+          // SHRINK
           setTimeout(() => {
             enemies.splice(index, 1);
             projectiles.splice(projectileIndex, 1);
           }, 0);
+          // END SHRINK
         }
       }
     });
