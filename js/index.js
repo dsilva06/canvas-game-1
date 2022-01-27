@@ -65,12 +65,15 @@ class Particle extends Projectile {
     this.alpha -= 0.01;
   }
 }
+class Supply extends Projectile {}
 
-let shooter = new Player(this.x, this.y, 15, "orangered");
+let cargoDrop = new Supply();
+
 let projectiles = [];
 let enemies = [];
 let enemyInterval;
 let particles = [];
+let supplies = [];
 
 function init() {
   shooter = new Player(this.x, this.y, 15, "orangered");
@@ -106,17 +109,19 @@ function spawnEnemies() {
     };
 
     enemies.push(new Enemy(x, y, radius, color, velocity));
-    console.log(enemies);
   }, 1000);
 }
 let engine;
 let points = 0;
+
+// START ANIMATION
 function animate() {
   engine = requestAnimationFrame(animate);
   ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   shooter.draw();
 
+  // PARTICLE EXPLOSION WHEN HITTING ENEMIES
   particles.forEach((particle, index) => {
     if (particle.alpha <= 0) {
       particles.splice(index, 1);
@@ -126,10 +131,11 @@ function animate() {
     particle.update();
   });
 
+  // PLAYERS PROJECTILES
   projectiles.forEach((projectile, index) => {
     projectile.update();
 
-    // REMOVING PROJECTILES FROM SCREEN
+    // REMOVING PROJECTILES ARRAY WHEN NO LONGER IN SCREEN
     if (
       projectile.x - projectile.radius < 0 ||
       projectile.x - projectile.radius > canvas.width ||
@@ -138,6 +144,7 @@ function animate() {
     ) {
       setTimeout(() => {
         projectiles.splice(index, 1);
+        console.log(projectiles);
       }, 0);
     }
   });
