@@ -66,6 +66,7 @@ button {
     text-align: center;
     transition: all 0.2s;
     margin: 10px;
+    user-select: none;
 }
 
 button:hover {
