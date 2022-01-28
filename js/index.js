@@ -14,7 +14,7 @@ window.onload = () => {
   y = canvas.height / 2;
 
   // SOUND EFFECTS
-  var backgroundMusic = new Audio("../music/boxcat-games-battle-boss.mp3");
+  let backgroundMusic = new Audio("../music/boxcat-games-battle-boss.mp3");
 
   class Player {
     constructor(x, y, radius, color) {
